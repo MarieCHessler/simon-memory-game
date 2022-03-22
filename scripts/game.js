@@ -10,11 +10,18 @@ function newGame() {
     game.playerMoves = [];
     game.score = 0;
     showScore();
+    addTurn();
 };
+
+function addTurn() {
+    game.playerMoves = [];
+    game.currentGame.push(game.choices[Math.floor(Math.random() * 4)]);
+    // showTurns();
+}
 
 function showScore() {
     document.getElementById("score").innerText = game.score;
 };
 
 // Always add new objects and functions for export
-module.exports = { game, newGame, showScore }; // Curly braces needed to export more than one object and function from file
+module.exports = { game, newGame, showScore, addTurn }; // Curly braces needed to export more than one object and function from file

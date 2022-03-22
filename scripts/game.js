@@ -3,6 +3,8 @@ let game = {
     currentGame: [], // Has empty array
     playerMoves: [], // Has empty array
     turnNumber: 0, // Has default value zero
+    lastButton: "",
+    turnInProgress: false,
     choices: ["button1", "button2", "button3", "button4"], // Has ID:s in array
 };
 
@@ -13,10 +15,13 @@ function newGame() {
     for (let circle of document.getElementsByClassName("circle")) {
         if (circle.getAttribute("data-listener") !== "true") { // Ask if the attribute is not true
             circle.addEventListener("click", (e) => {
-                let move = e.target.getAttribute("id"); // Get target ID on click, and store in move
-                lightsOn(move); // Illuminate circle
-                game.playerMoves.push(move); // Push move into game.playerMoves
-                playerTurn(); // Call playerTurn function
+                if (game.currentGame.length > 0 && !game.turnInProgress) {
+                    let move = e.target.getAttribute("id"); // Get target ID on click, and store in move
+                    game.lastButton = move; // Stores move in lastButton
+                    lightsOn(move); // Illuminate circle
+                    game.playerMoves.push(move); // Push move into game.playerMoves
+                    playerTurn(); // Call playerTurn function
+                };
             });
             circle.setAttribute("data-listener", "true");
         };
@@ -43,12 +48,14 @@ function lightsOn(circ) { // Function will be called with the ID of one of the c
 };
 
 function showTurns() {
+    game.turnInProgress = true;
     game.turnNumber = 0;
     let turns = setInterval(() => { // Interval is set
         lightsOn(game.currentGame[game.turnNumber]); // Calling lightsOn function to turn lights on
         game.turnNumber++; // Increment game.turnNumber
         if (game.turnNumber >= game.currentGame.length) {
             clearInterval(turns); // Sequence is done, so interval can be cleared and lights turned off
+            game.turnInProgress = false;
         };
     }, 800);
 }

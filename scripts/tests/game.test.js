@@ -2,7 +2,7 @@
 * @jest-environment jsdom
 */
 
-const { game, newGame, showScore, addTurn, lightsOn } = require("../game"); // Always import new objects and functions
+const { game, newGame, showScore, addTurn, lightsOn, showTurns } = require("../game"); // Always import new objects and functions
 
 
 beforeAll(() => {
@@ -12,23 +12,27 @@ beforeAll(() => {
     document.write(fileContents);
     document.close();
 });
- 
+
 describe("game object contains correct keys", () => {
     test("score key exists", () => {
-        expect("score" in game).toBe(true);
+        expect("score" in game).toBe(true); // Check that score key exists
     });
     test("currentGame key exists", () => {
-        expect("currentGame" in game).toBe(true);
+        expect("currentGame" in game).toBe(true); // Check that currentGame key exists
     });
     test("playerMoves key exists", () => {
-        expect("playerMoves" in game).toBe(true);
+        expect("playerMoves" in game).toBe(true); // Check that playerMoves key exists
     });
     test("choices key exists", () => {
-        expect("choices" in game).toBe(true);
+        expect("choices" in game).toBe(true); // Check that choices key exists
     });
     test("choices contain correct ids", () => {
         expect(game.choices).toEqual(["button1", "button2", "button3", "button4"]);
     });
+    test("turnNumber key exists", () => {
+        expect("turnNumber" in game).toBe(true); // Check that turnNumber key exists
+    });
+
 });
 
 describe("newGame works correctly", () => {
@@ -73,5 +77,10 @@ describe("gameplay works correctly", () => {
         let button = document.getElementById(game.currentGame[0]);
         lightsOn(game.currentGame[0]);
         expect(button.classList).toContain("light"); // Buttons class list should contain the lights class
+    });
+    test("showTurn should update game.turnNumber", () => {
+        game.turnNumber = 42;
+        showTurns(); // Should reset turnNumber
+        expect(game.turnNumber).toBe(0); // Check to see if the turnNumber is zero
     });
 });

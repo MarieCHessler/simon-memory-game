@@ -2,8 +2,9 @@
 * @jest-environment jsdom
 */
 
-const { game, newGame, showScore, addTurn, lightsOn, showTurns } = require("../game"); // Always import new objects and functions
+const { game, newGame, showScore, addTurn, lightsOn, showTurns, playerTurn } = require("../game"); // Always import new objects and functions
 
+jest.spyOn(window, "alert").mockImplementation(() => { }); // Jest spy checks if an alert has been called
 
 beforeAll(() => {
     let fs = require("fs");
@@ -43,6 +44,12 @@ describe("newGame works correctly", () => {
         document.getElementById("score").innerText = "42"; // Set the score to 42 on the DOM
         newGame();
     });
+    test("expect data-listener to be true", () => {
+        const elements = document.getElementsByClassName("circle");
+        for (let element of elements) {
+            expect(element.getAttribute("data-listener")).toEqual("true");
+        };
+    });
     test("should set game score to zero", () => {
         expect(game.score).toEqual(0);
     });
@@ -78,16 +85,19 @@ describe("gameplay works correctly", () => {
         lightsOn(game.currentGame[0]);
         expect(button.classList).toContain("light"); // Buttons class list should contain the lights class
     });
-    test("showTurn should update game.turnNumber", () => {
+    test("showTurns should update game.turnNumber", () => {
         game.turnNumber = 42;
         showTurns(); // Should reset turnNumber
         expect(game.turnNumber).toBe(0); // Check to see if the turnNumber is zero
     });
-    test("expect data-listener to be true", () => {
-        const elements = document.getElementsByClassName("circle");
-        for (let element of elements) {
-            expect(element.getAttribute("data-listener")).toEqual("true");
-        };
+    test("should increment the score if the turn is correct", () => {
+        game.playerMoves.push(game.currentGame[0]); // Take the one turn from beforeEach function and push into this
+        playerTurn();
+        expect(game.score).toBe(1); // Expect the score to have increased
     });
-
+    test("should call an alert if the move is wrong", () => {
+        game.playerMoves.push("wrong")
+        playerTurn();
+        expect(window.alert).toBeCalledWith("Wrong move!"); // Alert box with text Wrong move is called
+    });
 });

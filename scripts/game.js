@@ -53,5 +53,19 @@ function showTurns() {
     }, 800);
 }
 
+function playerTurn() {
+    let i = game.playerMoves.length - 1;
+    if (game.currentGame[i] === game.playerMoves[i]) {
+        if (game.currentGame.length === game.playerMoves.length) { // Means at end of sequence and player got all correct
+            game.score++; // Increment score
+            showScore();
+            addTurn();
+        }
+    } else {
+        alert("Wrong move!");
+        newGame();
+    }
+}
+
 // Always add new objects and functions for export
-module.exports = { game, newGame, showScore, addTurn, lightsOn, showTurns }; // Curly braces needed to export more than one object and function from file
+module.exports = { game, newGame, showScore, addTurn, lightsOn, showTurns, playerTurn }; // Curly braces needed to export more than one object and function from file
